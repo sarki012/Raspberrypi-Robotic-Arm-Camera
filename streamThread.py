@@ -22,6 +22,7 @@ def task2():
     x = 0
     while True:
         try:
+            font = cv2.FONT_HERSHEY_COMPLEX
             ret, frame = cap.read()
             #src = cv2.resize(src, (1000, 750)) 
             # Convert image to gray and blur it
@@ -30,18 +31,42 @@ def task2():
             canny_output = cv2.Canny(src_gray, 50, 150)
             contours, _ = cv2.findContours(
             canny_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  
-            i = 0
+            m = 0
             #using drawContours() function
             # list for storing names of shapes
             for contour in contours:
+                approx = cv2.approxPolyDP(contour, 0.009 * cv2.arcLength(contour, True), True)
                 # here we are ignoring first counter because 
                 # findcontour function detects whole image as shape
-                if i == 0:
-                    i = 1
+                if m == 0:
+                    m = 1
                     continue            
                 # using drawContours() function
-                cv2.drawContours(frame, [contour], -1, (0, 0, 255), 20)
+                cv2.drawContours(frame, [contour], -1, (0, 0, 255), 5)
+                # Used to flatten the array containing
+                # the co-ordinates of the vertices.
+                n = approx.ravel() 
+                i = 0
             
+                for j in n :
+                    if(i % 2 == 0):
+                        x = n[i]
+                        y = n[i + 1]
+            
+                        # String containing the co-ordinates.
+                        string = str(x) + " " + str(y) 
+            
+                        if(i == 0):
+                            # text on topmost co-ordinate.
+                          #  cv2.putText(frame, "Arrow tip", (x, y),
+                           #                 font, 0.5, (255, 0, 0)) 
+                            cv2.putText(frame, string, (x, y), 
+                                    font, 0.75, (0, 0, 0))
+                        else:
+                            # text on remaining co-ordinates.
+                            cv2.putText(frame, string, (x, y), 
+                                    font, 0.5, (0, 255, 0)) 
+                    i = i + 1
             #print(ret)
             if ret != False and x != 0:
                 cv2.imshow('Image',frame)
