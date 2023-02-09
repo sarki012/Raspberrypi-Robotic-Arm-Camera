@@ -58,7 +58,7 @@ def task2():
                     string2 = "Red: {}, Green: {}, Blue: {}".format(red, green, blue)
                     cv2.putText(output, string2, (x - 100,(y+ 100)), font, 0.5, (0, 0, 0))
                     #(b, g, r) = frame[green_centerX, green_centerY]
-            print("Pixel at (x, y) - Red: {}, Green: {}, Blue: {}".format(red, green, blue))  
+          #  print("Pixel at (x, y) - Red: {}, Green: {}, Blue: {}".format(red, green, blue))  
                     
             #using drawContours() function
             # list for storing names of shapes
@@ -70,7 +70,7 @@ def task2():
                     m = 1
                     continue            
                 # using drawContours() function
-                cv2.drawContours(frame, [contour], -1, (0, 0, 255), 5)
+                cv2.drawContours(output, [contour], -1, (0, 0, 255), 5)
 
         #        M = cv2.moments(contour)
          #       if M['m00'] != 0.0:
@@ -83,23 +83,23 @@ def task2():
 
                 # Used to flatten the array containing
                 # the co-ordinates of the vertices.
-              #  n = approx.ravel() 
-               # i = 0
+                n = approx.ravel() 
+                i = 0
             
-                #for j in n :
-                 #   if(i % 2 == 0):
-                  #      x = n[i]
-                   #     y = n[i + 1]
+                for j in n :
+                    if(i % 2 == 0):
+                        x2 = n[i]
+                        y2 = n[i + 1]
             
                         # String containing the co-ordinates.
-                    #    string = str(x) + " " + str(y) 
+                        string = str(x2) + " " + str(y2) 
             
-                     #   if(i == 0):
+                        if(i == 0):
                             # text on topmost co-ordinate.
                           #  cv2.putText(frame, "Arrow tip", (x, y),
                            #                 font, 0.5, (255, 0, 0)) 
-                      #      cv2.putText(frame, string, (x, y), 
-                       #             font, 0.75, (0, 0, 0))
+                            cv2.putText(output, string, (x2, y2), 
+                                    font, 0.5, (0, 0, 0))
                        # else:
                             # text on remaining co-ordinates.
                         #    cv2.putText(frame, string, (x, y), 
