@@ -24,6 +24,9 @@ def task2():
         try:
             font = cv2.FONT_HERSHEY_COMPLEX
             ret, frame = cap.read()
+            frame = cv2.resize(frame, (640, 480))
+            output = frame.copy()
+            width, height, channels = frame.shape
             #src = cv2.resize(src, (1000, 750)) 
             # Convert image to gray and blur it
             src_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -32,6 +35,31 @@ def task2():
             contours, _ = cv2.findContours(
             canny_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  
             m = 0
+            # detect circles in the image
+            circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1.2, 100)
+            # ensure at least some circles were found
+            if circles is not None:
+                # convert the (x, y) coordinates and radius of the circles to integers
+                circles = np.round(circles[0, :]).astype("int")
+                # loop over the (x, y) coordinates and radius of the circles
+                for (x, y, t) in circles:
+                    string = str(x) + " " + str(y) 
+                    # draw the circle in the output image, then draw a rectangle
+                    # corresponding to the center of the circle
+                    cv2.circle(output, (x, y), t, (0, 255, 0), 4)
+                    cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                    cv2.putText(output, string, (x, y), font, 0.75, (0, 0, 0))
+                   # if x < 640 and y < 480:
+                    color = frame[y, x]
+                    #b,g,r = (frame[x,y])
+                    blue = int(color[0])
+                    green = int(color[1])
+                    red = int(color[2])
+                    string2 = "Red: {}, Green: {}, Blue: {}".format(red, green, blue)
+                    cv2.putText(output, string2, (x - 100,(y+ 100)), font, 0.5, (0, 0, 0))
+                    #(b, g, r) = frame[green_centerX, green_centerY]
+            print("Pixel at (x, y) - Red: {}, Green: {}, Blue: {}".format(red, green, blue))  
+                    
             #using drawContours() function
             # list for storing names of shapes
             for contour in contours:
@@ -43,34 +71,47 @@ def task2():
                     continue            
                 # using drawContours() function
                 cv2.drawContours(frame, [contour], -1, (0, 0, 255), 5)
+
+        #        M = cv2.moments(contour)
+         #       if M['m00'] != 0.0:
+          #          x = int(M['m10']/M['m00'])
+           #         y = int(M['m01']/M['m00'])
+
+           #     cv2.putText(frame, 'Circle', (x, y),
+            #        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+
+
                 # Used to flatten the array containing
                 # the co-ordinates of the vertices.
-                n = approx.ravel() 
-                i = 0
+              #  n = approx.ravel() 
+               # i = 0
             
-                for j in n :
-                    if(i % 2 == 0):
-                        x = n[i]
-                        y = n[i + 1]
+                #for j in n :
+                 #   if(i % 2 == 0):
+                  #      x = n[i]
+                   #     y = n[i + 1]
             
                         # String containing the co-ordinates.
-                        string = str(x) + " " + str(y) 
+                    #    string = str(x) + " " + str(y) 
             
-                        if(i == 0):
+                     #   if(i == 0):
                             # text on topmost co-ordinate.
                           #  cv2.putText(frame, "Arrow tip", (x, y),
                            #                 font, 0.5, (255, 0, 0)) 
-                            cv2.putText(frame, string, (x, y), 
-                                    font, 0.75, (0, 0, 0))
-                        else:
+                      #      cv2.putText(frame, string, (x, y), 
+                       #             font, 0.75, (0, 0, 0))
+                       # else:
                             # text on remaining co-ordinates.
-                            cv2.putText(frame, string, (x, y), 
-                                    font, 0.5, (0, 255, 0)) 
-                    i = i + 1
+                        #    cv2.putText(frame, string, (x, y), 
+                         #           font, 0.5, (0, 255, 0)) 
+                    #i = i + 1
             #print(ret)
             if ret != False and x != 0:
-                cv2.imshow('Image',frame)
+               # cv2.imshow("output", np.hstack([frame, output]))
+                #cv2.waitKey(1)
+                cv2.imshow('Image',output)
                 cv2.waitKey(1)
+              	# show the output image
             x = 1
         except KeyboardInterrupt:
             # When everything done, release the capture
