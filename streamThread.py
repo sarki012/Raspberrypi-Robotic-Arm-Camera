@@ -9,8 +9,20 @@ import cv2
 import numpy as np
 import tty, sys, termios
 import threading
+import rcThread
+
+left_x = 0
+left_y = 0
+right_x = 0
+right_y = 0
+left_claw_x = 0
+left_claw_y = 0
+right_claw_x = 0
+right_claw_y = 0
 
 def task2():
+    global left_x
+    global left_y
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -31,6 +43,7 @@ def task2():
             # Convert image to gray and blur it
             src_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             src_gray = cv2.blur(src_gray, (3,3))
+           # canny_output = cv2.Canny(src_gray, 50, 150)
             canny_output = cv2.Canny(src_gray, 50, 150)
             contours, _ = cv2.findContours(
             canny_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  
@@ -42,21 +55,34 @@ def task2():
                 # convert the (x, y) coordinates and radius of the circles to integers
                 circles = np.round(circles[0, :]).astype("int")
                 # loop over the (x, y) coordinates and radius of the circles
-                for (x, y, t) in circles:
-                    string = str(x) + " " + str(y) 
-                    # draw the circle in the output image, then draw a rectangle
-                    # corresponding to the center of the circle
-                    cv2.circle(output, (x, y), t, (0, 255, 0), 4)
-                    cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-                    cv2.putText(output, string, (x, y), font, 0.75, (0, 0, 0))
-                   # if x < 640 and y < 480:
-                    color = frame[y, x]
-                    #b,g,r = (frame[x,y])
-                    blue = int(color[0])
-                    green = int(color[1])
-                    red = int(color[2])
-                    string2 = "Red: {}, Green: {}, Blue: {}".format(red, green, blue)
-                    cv2.putText(output, string2, (x - 100,(y+ 100)), font, 0.5, (0, 0, 0))
+                for (x, y, r) in circles:
+                   # print(r)
+                   # time.sleep(1)
+                    if (r < 82):
+                       # print(r)
+                        #time.sleep(1)
+                        left_x = x - r
+                        left_y = y
+                        right_x = x + r
+                        right_y = y
+                        string = str(x) + " " + str(y) 
+                        left_string = str(left_x) + " " + str(left_y) 
+                        right_string = str(right_x) + " " + str(right_y) 
+                        # draw the circle in the output image, then draw a rectangle
+                        # corresponding to the center of the circle
+                        cv2.circle(output, (x, y), r, (0, 255, 0), 4)
+                        cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                        cv2.putText(output, string, (x, y), font, 0.75, (0, 0, 0))
+                        cv2.putText(output, left_string, ((x - 150), y), font, 0.5, (0, 0, 0))
+                        cv2.putText(output, right_string, ((x + r), (y + 50)), font, 0.5, (0, 0, 0))
+                    # if x < 640 and y < 480:
+                        color = frame[y, x]
+                        #b,g,r = (frame[x,y])
+                        blue = int(color[0])
+                        green = int(color[1])
+                        red = int(color[2])
+                        string2 = "Red: {}, Green: {}, Blue: {}".format(red, green, blue)
+                        cv2.putText(output, string2, (x - 100,(y+ 100)), font, 0.5, (0, 0, 0))
                     #(b, g, r) = frame[green_centerX, green_centerY]
           #  print("Pixel at (x, y) - Red: {}, Green: {}, Blue: {}".format(red, green, blue))  
                     
@@ -90,21 +116,29 @@ def task2():
                     if(i % 2 == 0):
                         x2 = n[i]
                         y2 = n[i + 1]
-            
                         # String containing the co-ordinates.
                         string = str(x2) + " " + str(y2) 
-            
                         if(i == 0):
                             # text on topmost co-ordinate.
                           #  cv2.putText(frame, "Arrow tip", (x, y),
-                           #                 font, 0.5, (255, 0, 0)) 
+                           #                 font, 0.5, (255, 0, 0))
+                            if x2 > 100 and x2 < 320 and y2 > 300 and y2 < 400:
+                                cv2.putText(output, "Left Claw", ((x2 - 100), y2), 
+                                    font, 0.5, (0, 0, 0))
+                                left_claw_x = x2
+                                left_claw_y = y2
+                            elif x2 >= 320 and x2 < 640 and y2 > 300 and y2 < 400:
+                                cv2.putText(output, "Right Claw", ((x2 - 100), y2), 
+                                    font, 0.5, (0, 0, 0))
+                                right_claw_x = x2
+                                right_claw_y = y2
                             cv2.putText(output, string, (x2, y2), 
                                     font, 0.5, (0, 0, 0))
                        # else:
                             # text on remaining co-ordinates.
                         #    cv2.putText(frame, string, (x, y), 
                          #           font, 0.5, (0, 255, 0)) 
-                    #i = i + 1
+                    i = i + 1
             #print(ret)
             if ret != False and x != 0:
                # cv2.imshow("output", np.hstack([frame, output]))
