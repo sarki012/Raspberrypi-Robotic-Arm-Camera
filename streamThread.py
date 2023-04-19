@@ -20,7 +20,7 @@ left_claw_y = 0
 right_claw_x = 0
 right_claw_y = 0
 
-def task2():
+def task3():
     global left_x
     global left_y
     cap = cv2.VideoCapture(0)
