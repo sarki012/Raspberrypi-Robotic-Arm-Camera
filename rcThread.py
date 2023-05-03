@@ -105,11 +105,28 @@ def task2():
         if(connection != False):
             try:  
                 ##########Data Relay From dsPIC UART to Bluetooth#########
-                adcVals = deviceUC2.read(30)
-                print(adcVals)
-                client_sock.send(adcVals)
+               # adcValsUc1 = deviceUC1.read(10)
+                adcValsUc1 = deviceUC1.read(20)
+                print(adcValsUc1)
+                client_sock.send(adcValsUc1)
+                adcValsUc2 = deviceUC2.read(25)
+                print(adcValsUc2)
+                client_sock.send(adcValsUc2)
+                #time.sleep(0.1)
                 time.sleep(0.1)
-
             except KeyboardInterrupt:
                 print("\nDisconnected")
                 raise SystemExit 
+
+#def task3():
+ #   while True:
+  #      if(connection != False):
+   #         try:  
+    #            ##########Data Relay From dsPIC UART to Bluetooth#########
+     #           global adcValsUc1
+      #          adcValsUc1 = deviceUC1.read(10)
+       #         print(adcValsUc1)
+        #        #time.sleep(0.1)
+         #   except KeyboardInterrupt:
+          #      print("\nDisconnected")
+           #     raise SystemExit 
