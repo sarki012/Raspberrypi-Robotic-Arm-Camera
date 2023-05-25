@@ -72,10 +72,13 @@ def task1():
                 deviceUC1.write('@')
             elif data_char == 'l':      #Left
                 deviceUC1.write('l')
+                deviceUC2.write('l')
             elif data_char == 'r':      #Right
                 deviceUC1.write('r')
+                deviceUC2.write('r')
             elif data_char == '$':      #Stop rotation
                 deviceUC1.write('$')
+                deviceUC2.write('$')
             elif data_char == 'O':      #Out
                 deviceUC2.write('O')
             elif data_char == 'I':      #In
@@ -106,10 +109,11 @@ def task2():
             try:  
                 ##########Data Relay From dsPIC UART to Bluetooth#########
                # adcValsUc1 = deviceUC1.read(10)
-                adcValsUc1 = deviceUC1.read(20)
+                adcValsUc1 = deviceUC1.read(20)     #Was 20
                 print(adcValsUc1)
                 client_sock.send(adcValsUc1)
-                adcValsUc2 = deviceUC2.read(25)
+                time.sleep(0.1)
+                adcValsUc2 = deviceUC2.read(25)     #Was 25
                 print(adcValsUc2)
                 client_sock.send(adcValsUc2)
                 #time.sleep(0.1)
