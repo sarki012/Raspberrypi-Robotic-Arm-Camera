@@ -20,7 +20,7 @@ left_claw_y = 0
 right_claw_x = 0
 right_claw_y = 0
 
-def task3():
+def task4():
     global left_x
     global left_y
     cap = cv2.VideoCapture(0)
@@ -56,36 +56,35 @@ def task3():
                 circles = np.round(circles[0, :]).astype("int")
                 # loop over the (x, y) coordinates and radius of the circles
                 for (x, y, r) in circles:
-                   # print(r)
-                   # time.sleep(1)
-                    if (r < 82):
-                       # print(r)
-                        #time.sleep(1)
-                        left_x = x - r
-                        left_y = y
-                        right_x = x + r
-                        right_y = y
-                        string = str(x) + " " + str(y) 
-                        left_string = str(left_x) + " " + str(left_y) 
-                        right_string = str(right_x) + " " + str(right_y) 
-                        # draw the circle in the output image, then draw a rectangle
-                        # corresponding to the center of the circle
-                        cv2.circle(output, (x, y), r, (0, 255, 0), 4)
-                        cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-                        cv2.putText(output, string, (x, y), font, 0.75, (0, 0, 0))
-                        cv2.putText(output, left_string, ((x - 150), y), font, 0.5, (0, 0, 0))
-                        cv2.putText(output, right_string, ((x + r), (y + 50)), font, 0.5, (0, 0, 0))
-                    # if x < 640 and y < 480:
-                        color = frame[y, x]
-                        #b,g,r = (frame[x,y])
-                        blue = int(color[0])
-                        green = int(color[1])
-                        red = int(color[2])
-                        string2 = "Red: {}, Green: {}, Blue: {}".format(red, green, blue)
-                        cv2.putText(output, string2, (x - 100,(y+ 100)), font, 0.5, (0, 0, 0))
-                    #(b, g, r) = frame[green_centerX, green_centerY]
-          #  print("Pixel at (x, y) - Red: {}, Green: {}, Blue: {}".format(red, green, blue))  
-                    
+                    string = "D(x,y)= " + "(" + str(x) + ", " + str(y) + ")" 
+                    # draw the circle in the output image, then draw a rectangle
+                    # corresponding to the center of the circle
+                    cv2.circle(output, (x, y), r, (0, 255, 0), 4)
+                    cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                    cv2.putText(output, string, (x - 100, y - 20), font, 1, (0, 0, 0), thickness = 3)
+
+            left_claw_x = 100
+            left_claw_y = 250
+            right_claw_x = 465
+            right_claw_y = 300
+            cv2.rectangle(output, (75, 225),(125,275),(255,0,0),5)
+            cv2.rectangle(output, (left_claw_x - 5, left_claw_y - 5), (left_claw_x + 5, left_claw_y + 5), (0, 128, 255), -1)
+            string = "A(x,y)= " + "(" + str(left_claw_x) + ", " + str(left_claw_y) + ")" 
+            cv2.putText(output, string, (left_claw_x - 75, left_claw_y - 40), font, 1, (0, 0, 0), thickness = 3)
+            cv2.rectangle(output, (440, 275),(490,325),(255,0,0),5) 
+            cv2.rectangle(output, (right_claw_x - 5, right_claw_y - 5), (right_claw_x + 5, right_claw_y + 5), (0, 128, 255), -1)
+            string = "B(x,y)= "
+            cv2.putText(output, string, (right_claw_x + 20, right_claw_y), font, 1, (0, 0, 0), thickness = 3)
+            string = "(" + str(right_claw_x) + ", " + str(right_claw_y) + ")"
+            cv2.putText(output, string, (right_claw_x + 20, right_claw_y + 40), font, 1, (0, 0, 0), thickness = 3)
+            cv2.line(output, (left_claw_x, left_claw_y), (right_claw_x, right_claw_y), (0, 255, 0), 5)
+            claw_center_x = 282
+            claw_center_y = 275
+            string = "C(x,y)= "
+            cv2.rectangle(output, (claw_center_x - 5, claw_center_y - 5), (claw_center_x + 5, claw_center_y + 5), (0, 128, 255), 5)
+            cv2.putText(output, string, (claw_center_x - 50, claw_center_y + 40), font, 1, (0, 0, 0), thickness = 3)
+            string = "(" + str(claw_center_x) + ", " + str(claw_center_y) + ")" 
+            cv2.putText(output, string, (claw_center_x - 50, claw_center_y + 80), font, 1, (0, 0, 0), thickness = 3)
             #using drawContours() function
             # list for storing names of shapes
             for contour in contours:
@@ -98,16 +97,16 @@ def task3():
                 # using drawContours() function
                 cv2.drawContours(output, [contour], -1, (0, 0, 255), 5)
 
-        #        M = cv2.moments(contour)
-         #       if M['m00'] != 0.0:
-          #          x = int(M['m10']/M['m00'])
-           #         y = int(M['m01']/M['m00'])
+              #  M = cv2.moments(contour)
+               # if M['m00'] != 0:
+                #    cx = int(M['m10']/M['m00'])
+                 #   cy = int(M['m01']/M['m00'])
+                  #  cv2.circle(output, (cx, cy), 7, (0, 0, 255), -1)
+                   # cv2.putText(output, "center", (cx - 20, cy - 20),
+                    #        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+                #print(f"x: {cx} y: {cy}")
 
-           #     cv2.putText(frame, 'Circle', (x, y),
-            #        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-
-
-                # Used to flatten the array containing
+                                # Used to flatten the array containing
                 # the co-ordinates of the vertices.
                 n = approx.ravel() 
                 i = 0
@@ -118,31 +117,30 @@ def task3():
                         y2 = n[i + 1]
                         # String containing the co-ordinates.
                         string = str(x2) + " " + str(y2) 
-                        if(i == 0):
+                    #    if(i == 0):
                             # text on topmost co-ordinate.
                           #  cv2.putText(frame, "Arrow tip", (x, y),
                            #                 font, 0.5, (255, 0, 0))
-                            if x2 > 100 and x2 < 320 and y2 > 300 and y2 < 400:
-                                cv2.putText(output, "Left Claw", ((x2 - 100), y2), 
-                                    font, 0.5, (0, 0, 0))
-                                left_claw_x = x2
-                                left_claw_y = y2
-                            elif x2 >= 320 and x2 < 640 and y2 > 300 and y2 < 400:
-                                cv2.putText(output, "Right Claw", ((x2 - 100), y2), 
-                                    font, 0.5, (0, 0, 0))
-                                right_claw_x = x2
-                                right_claw_y = y2
-                            cv2.putText(output, string, (x2, y2), 
-                                    font, 0.5, (0, 0, 0))
+                          #  if x2 > 100 and x2 < 320 and y2 > 300 and y2 < 400:
+              #              cv2.putText(output, "Left Claw", ((x2 - 100), y2), 
+               #                     font, 0.5, (0, 0, 0))
+                #            left_claw_x = x2
+                 #           left_claw_y = y2
+                        #elif x2 >= 320 and x2 < 640 and y2 > 300 and y2 < 400:
+                  #          cv2.putText(output, "Right Claw", ((x2 - 100), y2), 
+                   #                 font, 0.5, (0, 0, 0))
+                    #        right_claw_x = x2
+                     #       right_claw_y = y2
+                      #      cv2.putText(output, string, (x2, y2), 
+                       #             font, 0.5, (0, 0, 0))
                        # else:
                             # text on remaining co-ordinates.
                         #    cv2.putText(frame, string, (x, y), 
                          #           font, 0.5, (0, 255, 0)) 
                     i = i + 1
-            #print(ret)
+
+            
             if ret != False and x != 0:
-               # cv2.imshow("output", np.hstack([frame, output]))
-                #cv2.waitKey(1)
                 cv2.imshow('Image',output)
                 cv2.waitKey(1)
               	# show the output image
