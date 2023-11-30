@@ -11,14 +11,12 @@ import tty, sys, termios
 import threading
 import rcThread
 
-left_x = 0
-left_y = 0
-right_x = 0
-right_y = 0
-left_claw_x = 0
-left_claw_y = 0
-right_claw_x = 0
-right_claw_y = 0
+x = 0       #Center of cup
+y = 0
+
+claw_center_x = 0       #Center of midpoint between tips of claw
+claw_center_y = 0
+
 
 def task4():
     global left_x
