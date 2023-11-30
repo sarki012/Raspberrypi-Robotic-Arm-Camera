@@ -11,11 +11,16 @@ import tty, sys, termios
 import threading
 import streamThread
 import robotMain
+from threading import Event
+import signal
 
 
+
+data_char = 0
+deviceUC1 = Device('FT7210GA')     #Bottom USB
+deviceUC2 = Device('FT71VG2G')     #Top USB
 
 def task1():
-
     cmd = 'sudo hciconfig hci0 piscan'
     os.system(cmd)
     j = 0
@@ -43,12 +48,10 @@ def task1():
 
     filedescriptors = termios.tcgetattr(sys.stdin)
     tty.setcbreak(sys.stdin)
-    global deviceUC1
-    deviceUC1 = Device('FT7210GA')     #Bottom USB
+  #  deviceUC1 = Device('FT7210GA')     #Bottom USB
     deviceUC1.baudrate = 115200
     deviceUC1.open()
-    global deviceUC2
-    deviceUC2 = Device('FT71VG2G')     #Top USB
+   # deviceUC2 = Device('FT71VG2G')     #Top USB
     deviceUC2.baudrate = 115200
     deviceUC2.open()
 
@@ -64,21 +67,32 @@ def task1():
             if len(data) == 0:
                 break
             data_char = chr(data[0])
-            if data_char == 'u':        #Up
-                deviceUC1.write('u')
+            if data_char == 'A':        #A for Auto Mode, toggleFlag = 1
+                robotMain.thread_switch_event.set()
+            elif data_char == 'R':      #R for RC Mode, toggleFlag = 0
+                print("Back to RC Mode!")
+                robotMain.thread_switch_event.clear()
+                robotMain.go_event.clear()
+            elif data_char == 'g' and robotMain.thread_switch_event.is_set():        #Go in auto mode
+                print("Go//////////////////////////////////////////")
+                robotMain.go_event.set()        #Go in auto mode
+            elif data_char == 'x':      #Stop
+                print("Stop")
+                robotMain.go_event.clear()        #Stop in auto mode
+                deviceUC1.write('q')                #q for quit
+                deviceUC2.write('q')                #q for quit
+            elif data_char == 'u':        #Up
+                deviceUC2.write('u')
             elif data_char == 'd':      #Down
-                deviceUC1.write('d')
+                deviceUC2.write('d')
             elif data_char == '@':      #Stop boom
-                deviceUC1.write('@')
+                deviceUC2.write('@')
             elif data_char == 'l':      #Left
                 deviceUC1.write('l')
-                deviceUC2.write('l')
             elif data_char == 'r':      #Right
                 deviceUC1.write('r')
-                deviceUC2.write('r')
             elif data_char == '$':      #Stop rotation
                 deviceUC1.write('$')
-                deviceUC2.write('$')
             elif data_char == 'O':      #Out
                 deviceUC2.write('O')
             elif data_char == 'I':      #In
@@ -92,35 +106,35 @@ def task1():
             elif data_char == '^':      #Stop tip motor
                 deviceUC2.write('^')
             elif data_char == 'n':      #CLaw open
-                deviceUC2.write('n')
+                deviceUC1.write('n')
             elif data_char == 'c':      #Claw closed
-                deviceUC2.write('c')
+                deviceUC1.write('c')
             elif data_char == '%':      #Stop claw motor
-                deviceUC2.write('%')
+                deviceUC1.write('%')
 
         except KeyboardInterrupt:
             print("\nDisconnected")
             client_sock.close()
             server_sock.close()
             raise SystemExit 
-def task2():
-    while True:
-        if(connection != False):
-            try:  
+#def task2():
+ #   while True:
+  #      if(connection != False):
+   #         try:  
                 ##########Data Relay From dsPIC UART to Bluetooth#########
                # adcValsUc1 = deviceUC1.read(10)
-                adcValsUc1 = deviceUC1.read(20)     #Was 20
-                print(adcValsUc1)
-                client_sock.send(adcValsUc1)
-                time.sleep(0.1)
-                adcValsUc2 = deviceUC2.read(25)     #Was 25
-                print(adcValsUc2)
-                client_sock.send(adcValsUc2)
+              #  adcValsUc1 = rcThread.deviceUC1.read(20)     #Was 20
+               # print(adcValsUc1)
+                #client_sock.send(adcValsUc1)
                 #time.sleep(0.1)
-                time.sleep(0.1)
-            except KeyboardInterrupt:
-                print("\nDisconnected")
-                raise SystemExit 
+                #adcValsUc2 = deviceUC2.read(25)     #Was 25
+                #print(adcValsUc2)
+                #client_sock.send(adcValsUc2)
+                #time.sleep(0.1)
+                #time.sleep(0.1)
+    #        except KeyboardInterrupt:
+      #          print("\nDisconnected")
+     #           raise SystemExit 
 
 #def task3():
  #   while True:
