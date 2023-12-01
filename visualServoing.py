@@ -1,3 +1,4 @@
+from re import X
 from pylibftdi import Device
 import os
 import glob
@@ -14,6 +15,8 @@ import robotMain
 import rcThread
 from threading import Event
 import signal
+import queue
+
 
 #x = 0       #Center of cup
 #y = 0
@@ -25,24 +28,41 @@ import signal
 # + = up, - = down
 
 def task3():
+    x= 0
     print("Thread 3 started. Waiting for the signal....")
     while True:
         try:
+            x = robotMain.queue.get()
+            robotMain.queue.task_done()
             robotMain.thread_switch_event.wait()
-            print("Welcome to Auto Camera Mode.")
+          #  print("Welcome to Auto Camera Mode.")
             robotMain.go_event.wait()
-            print("Go*****************************************!!")
-            error = streamThread.claw_center_x - streamThread.x
-            while abs(error) > 5:
-                if streamThread.x > 0 and streamThread.x < 640 and streamThread.claw_center_x > 0 and streamThread.claw_center_x < 640:
-                    if streamThread.claw_center_x < (streamThread.x - 5):
-                        rcThread.deviceUC1.write('}')   #Right
-                    elif streamThread.claw_center_x > (streamThread.x + 5):
-                        rcThread.deviceUC1.write('{')   #Left
-                    if(abs(error) <= 5):
-                        rcThread.deviceUC1.write('q')   #Stop (Break)
-                        while True:
-                            pass
+           # print("Go*****************************************!!")
+            #while abs(282 - x) > 5:
+            print("x", x)
+            print("xC", 282)
+          #  while abs(282 - x) > 25:
+            #   if x > 0 and x < 640 and 282 > 0 and 282 < 640:
+            if x > 282:
+                while x > 282:
+                    x = robotMain.queue.get()
+                    robotMain.queue.task_done()
+                    #print("x = ", x)
+                    #time.sleep(1)
+                    rcThread.deviceUC1.write('}')   #Right
+                  #  print("Moving Right!")
+            elif x < 282:
+                while x < 282:
+                    x = robotMain.queue.get()
+                    robotMain.queue.task_done()
+                    # print("x = ", x)
+                    # time.sleep(1)
+                    rcThread.deviceUC1.write('{')   #Left
+                   # print("Moving Left!")
+            rcThread.deviceUC1.write('q')   #Stop (Break)
+            print("Goal Achieved!")
+            robotMain.go_event.clear()
+          
         except KeyboardInterrupt:
             print("\nDisconnected")
             raise SystemExit 
