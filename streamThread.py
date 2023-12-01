@@ -10,15 +10,19 @@ import numpy as np
 import tty, sys, termios
 import threading
 import rcThread
+import robotMain
+import queue
 
-x = 0       #Center of cup
+x = 0      #Center of cup = 0
 y = 0
-
-claw_center_x = 0       #Center of midpoint between tips of claw
+claw_center_x = 0      #Center of midpoint between tips of claw
 claw_center_y = 0
 
-
 def task4():
+    global x      #Center of cup
+    global y
+    global claw_center_x      #Center of midpoint between tips of claw
+    global claw_center_y
     global left_x
     global left_y
     cap = cv2.VideoCapture(0)
@@ -29,7 +33,10 @@ def task4():
     if cap.isOpened():
         print("Video Capture Opened")
 
-    x = 0
+    xBufCount = 0
+    xBuf = 0
+    yBufCount = 0
+    k = 0
     while True:
         try:
             font = cv2.FONT_HERSHEY_COMPLEX
@@ -60,7 +67,24 @@ def task4():
                     cv2.circle(output, (x, y), r, (0, 255, 0), 4)
                     cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
                     cv2.putText(output, string, (x - 100, y - 20), font, 1, (0, 0, 0), thickness = 3)
-
+              #      cv2.line(output, (x - r, y), (x + r, y), (0, 255, 0), 5)
+               #     string = "r = "+ str(r) 
+                #    cv2.putText(output, string,(x, y), font, 1, (0, 0, 0), thickness = 3)
+                    
+            #if y > 1:
+             #   yBuf += y
+              #  yBufCount += 1
+            if x > 1 and x < 640:
+                xBuf += x
+                xBufCount += 1
+            
+            if xBufCount == 10:
+                xBuf = (int)(xBuf/10)
+                robotMain.queue.put(xBuf)
+                xBuf = 0
+                xBufCount = 0
+          #  yBuf /= 10
+            
             left_claw_x = 100
             left_claw_y = 250
             right_claw_x = 465
@@ -137,12 +161,13 @@ def task4():
                          #           font, 0.5, (0, 255, 0)) 
                     i = i + 1
 
+
             
-            if ret != False and x != 0:
+            if ret != False and k != 0:
                 cv2.imshow('Image',output)
                 cv2.waitKey(1)
               	# show the output image
-            x = 1
+            k = 1
         except KeyboardInterrupt:
             # When everything done, release the capture
             cap.release()
