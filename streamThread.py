@@ -38,24 +38,31 @@ def task4():
     yBufCount = 0
     k = 0
     xPrev = 0
+    yPrev = 0
+    rPrev = 0
     while True:
         try:
             font = cv2.FONT_HERSHEY_COMPLEX
             ret, frame = cap.read()
-            frame = cv2.resize(frame, (640, 480))
+        #    frame = cv2.resize(frame, (640, 480))
+            frame = cv2.resize(frame, (1000, 750))
             output = frame.copy()
             width, height, channels = frame.shape
             #src = cv2.resize(src, (1000, 750)) 
             # Convert image to gray and blur it
             src_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            src_gray = cv2.blur(src_gray, (3,3))
+  #          src_gray = cv2.blur(src_gray, (3,3))
            # canny_output = cv2.Canny(src_gray, 50, 150)
-            canny_output = cv2.Canny(src_gray, 50, 150)
-            contours, _ = cv2.findContours(
-            canny_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  
+   #         canny_output = cv2.Canny(src_gray, 50, 150)
+    #        contours, _ = cv2.findContours(
+     #       canny_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  
             m = 0
             # detect circles in the image
-            circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1.2, 100)
+     #       circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1.2, 100)
+        
+          
+            circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1, 20, param1 = 50, param2 = 30, minRadius = 220, maxRadius = 240) 
+          #param1 was 50
             # ensure at least some circles were found
             if circles is not None:
                 # convert the (x, y) coordinates and radius of the circles to integers
@@ -69,11 +76,19 @@ def task4():
                     cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
                     cv2.putText(output, string, (x - 100, y - 20), font, 1, (0, 0, 0), thickness = 3)
                     xPrev = x
+                    yPrev = y
+                    rPrev = r
               #      cv2.line(output, (x - r, y), (x + r, y), (0, 255, 0), 5)
                #     string = "r = "+ str(r) 
                 #    cv2.putText(output, string,(x, y), font, 1, (0, 0, 0), thickness = 3)
             elif circles is None:
+                string = "B(x,y)= " + "(" + str(xPrev) + ", " + str(yPrev) + ")" 
+                cv2.circle(output, (xPrev, yPrev), rPrev, (0, 255, 0), 4)
+                cv2.rectangle(output, (xPrev - 5, yPrev - 5), (xPrev + 5, yPrev + 5), (0, 128, 255), -1)
+                cv2.putText(output, string, (xPrev - 100, yPrev - 20), font, 1, (0, 0, 0), thickness = 3)
                 x = xPrev
+                y = yPrev
+                r = rPrev
                     
             #if y > 1:
              #   yBuf += y
@@ -90,39 +105,51 @@ def task4():
         #        xBufCount = 0
           #  yBuf /= 10
             
-            left_claw_x = 100
-            left_claw_y = 250
-            right_claw_x = 465
-            right_claw_y = 300
-            cv2.rectangle(output, (75, 225),(125,275),(255,0,0),5)
-            cv2.rectangle(output, (left_claw_x - 5, left_claw_y - 5), (left_claw_x + 5, left_claw_y + 5), (0, 128, 255), -1)
-            string = "A(x,y)= " + "(" + str(left_claw_x) + ", " + str(left_claw_y) + ")" 
-            cv2.putText(output, string, (left_claw_x - 75, left_claw_y - 40), font, 1, (0, 0, 0), thickness = 3)
-            cv2.rectangle(output, (440, 275),(490,325),(255,0,0),5) 
-            cv2.rectangle(output, (right_claw_x - 5, right_claw_y - 5), (right_claw_x + 5, right_claw_y + 5), (0, 128, 255), -1)
-            string = "B(x,y)= "
-            cv2.putText(output, string, (right_claw_x + 20, right_claw_y), font, 1, (0, 0, 0), thickness = 3)
-            string = "(" + str(right_claw_x) + ", " + str(right_claw_y) + ")"
-            cv2.putText(output, string, (right_claw_x + 20, right_claw_y + 40), font, 1, (0, 0, 0), thickness = 3)
+            left_claw_x = 200
+            left_claw_y = 465
+            right_claw_x = 793
+            right_claw_y = 545
+            #############################Left claw################################################
+            cv2.rectangle(output, (left_claw_x - 30, left_claw_y - 30),(left_claw_x + 30,left_claw_y + 30),(255,0,0),5)         #Left claw blue square
+            cv2.rectangle(output, (left_claw_x - 10, left_claw_y - 10), (left_claw_x + 10, left_claw_y + 10), (0, 128, 255), -1)        #Left claw orange square
+       #     string = "A(x,y)= " + "(" + str(left_claw_x) + ", " + str(left_claw_y) + ")" 
+        #    cv2.putText(output, string, (left_claw_x - 75, left_claw_y - 40), font, 1, (0, 0, 0), thickness = 3)
+            #############################Right claw############################################
+            cv2.rectangle(output, (right_claw_x - 30, right_claw_y - 30),(right_claw_x + 30,right_claw_y + 30),(255,0,0),5)          #Right claw blue square
+            cv2.rectangle(output, (right_claw_x - 10, right_claw_y - 10), (right_claw_x + 10, right_claw_y + 10), (0, 128, 255), -1)        #Right claw orange square
+         #   string = "B(x,y)= "
+          #  cv2.putText(output, string, (right_claw_x + 20, right_claw_y), font, 1, (0, 0, 0), thickness = 3)
+           # string = "(" + str(right_claw_x) + ", " + str(right_claw_y) + ")"
+            #cv2.putText(output, string, (right_claw_x + 20, right_claw_y + 40), font, 1, (0, 0, 0), thickness = 3)
+
+            claw_center_x = 497
+            claw_center_y = 505
+            ############################Line conncting the tips of the claws#######################
             cv2.line(output, (left_claw_x, left_claw_y), (right_claw_x, right_claw_y), (0, 255, 0), 5)
-            claw_center_x = 282
-            claw_center_y = 275
-            string = "C(x,y)= "
             cv2.rectangle(output, (claw_center_x - 5, claw_center_y - 5), (claw_center_x + 5, claw_center_y + 5), (0, 128, 255), 5)
-            cv2.putText(output, string, (claw_center_x - 50, claw_center_y + 40), font, 1, (0, 0, 0), thickness = 3)
+            string = "A(x,y)= "
+            cv2.putText(output, string, (claw_center_x + 20, claw_center_y + 45), font, 1, (0, 0, 0), thickness = 3)
             string = "(" + str(claw_center_x) + ", " + str(claw_center_y) + ")" 
-            cv2.putText(output, string, (claw_center_x - 50, claw_center_y + 80), font, 1, (0, 0, 0), thickness = 3)
+            cv2.putText(output, string, (claw_center_x + 20, claw_center_y + 84), font, 1, (0, 0, 0), thickness = 3)
+            ############################Vertical Crosshairs###########################
+            cv2.line(output, (claw_center_x, 0), (claw_center_x, 750), (0, 255, 0), 5)
+            cv2.circle(output, (claw_center_x, claw_center_y), 40, (0, 255, 0), 4)
+            ###########################Cup horizontal crosshairs######################
+            cv2.line(output, (0, y), (1000, y), (0, 0, 255), 5)
+            ###########################Cup vertical crosshairs######################
+            cv2.line(output, (x, 0), (x, 750), (0, 0, 255), 5)
+            cv2.circle(output, (x, y), 40, (0, 0, 255), 4)
             #using drawContours() function
             # list for storing names of shapes
-            for contour in contours:
-                approx = cv2.approxPolyDP(contour, 0.009 * cv2.arcLength(contour, True), True)
+ #           for contour in contours:
+  #              approx = cv2.approxPolyDP(contour, 0.009 * cv2.arcLength(contour, True), True)
                 # here we are ignoring first counter because 
                 # findcontour function detects whole image as shape
-                if m == 0:
-                    m = 1
-                    continue            
+   #             if m == 0:
+    #                m = 1
+     #               continue            
                 # using drawContours() function
-                cv2.drawContours(output, [contour], -1, (0, 0, 255), 5)
+      #          cv2.drawContours(output, [contour], -1, (0, 0, 255), 5)
 
               #  M = cv2.moments(contour)
                # if M['m00'] != 0:
@@ -135,16 +162,16 @@ def task4():
 
                                 # Used to flatten the array containing
                 # the co-ordinates of the vertices.
-                n = approx.ravel() 
-                i = 0
-            
-                for j in n :
-                    if(i % 2 == 0):
-                        x2 = n[i]
-                        y2 = n[i + 1]
+       #         n = approx.ravel() 
+        #        i = 0
+         #   
+          #      for j in n :
+#                    if(i % 2 == 0):
+ #                       x2 = n[i]
+  #                      y2 = n[i + 1]
                         # String containing the co-ordinates.
-                        string = str(x2) + " " + str(y2) 
-                    #    if(i == 0):
+    #                    string = str(x2) + " " + str(y2) 
+   #                 #    if(i == 0):
                             # text on topmost co-ordinate.
                           #  cv2.putText(frame, "Arrow tip", (x, y),
                            #                 font, 0.5, (255, 0, 0))
@@ -164,7 +191,7 @@ def task4():
                             # text on remaining co-ordinates.
                         #    cv2.putText(frame, string, (x, y), 
                          #           font, 0.5, (0, 255, 0)) 
-                    i = i + 1
+     #               i = i + 1
 
 
             
