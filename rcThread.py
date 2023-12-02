@@ -17,10 +17,16 @@ import signal
 
 
 data_char = 0
+
 deviceUC1 = Device('FT7210GA')     #Bottom USB
 deviceUC2 = Device('FT71VG2G')     #Top USB
 
+client_sock = 0
+server_sock = 0
 def task1():
+    global client_sock
+    global server_sock
+
     cmd = 'sudo hciconfig hci0 piscan'
     os.system(cmd)
     j = 0
@@ -29,9 +35,6 @@ def task1():
 
     global connection
     connection = False
-
-    global client_sock
-    global server_sock
 
     server_sock=BluetoothSocket( RFCOMM )
     server_sock.bind(("",PORT_ANY))
@@ -63,7 +66,7 @@ def task1():
             connection = True
             print("Accepted connection from ", client_info)
         try:  
-            data = client_sock.recv(50)
+            data = client_sock.recv(5)      #was 50
             if len(data) == 0:
                 break
             data_char = chr(data[0])
@@ -76,6 +79,8 @@ def task1():
             elif data_char == 'g' and robotMain.thread_switch_event.is_set():        #Go in auto mode
                # print("Go//////////////////////////////////////////")
                 robotMain.go_event.set()        #Go in auto mode
+            elif data_char == 's' and robotMain.thread_switch_event.is_set():        #Go in auto mode
+                robotMain.go_event.clear()        #Go in auto mode
             elif data_char == 'x':      #Stop
               #  print("Stop")
                 robotMain.go_event.clear()        #Stop in auto mode
