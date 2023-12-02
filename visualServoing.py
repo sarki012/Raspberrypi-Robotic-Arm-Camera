@@ -30,12 +30,12 @@ def task3():
             print("Welcome to Auto Camera Mode.")
             robotMain.go_event.wait()
             print("Go*****************************************!!")
-            if streamThread.x > 282:
-                while streamThread.x > 282:
+            if streamThread.x > 497:
+                while streamThread.x > 497:
                     rcThread.deviceUC1.write('}')   #Right
                     time.sleep(1)
-            elif streamThread.x < 282:
-                while streamThread.x < 282:
+            elif streamThread.x < 497:
+                while streamThread.x < 497:
                     rcThread.deviceUC1.write('{')   #Left
                     time.sleep(1)
             rcThread.deviceUC1.write('q')   #Stop (Break)
