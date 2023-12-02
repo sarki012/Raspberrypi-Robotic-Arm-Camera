@@ -14,13 +14,13 @@ import robotMain
 import queue
 
 x = 0      #Center of cup = 0
-#y = 0
+y = 0
 #claw_center_x = 0      #Center of midpoint between tips of claw
 #claw_center_y = 0
 
 def task4():
     global x      #Center of cup
-  #  global y
+    global y
    # global claw_center_x      #Center of midpoint between tips of claw
     #global claw_center_y
     global left_x
