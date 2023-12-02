@@ -72,16 +72,16 @@ def task1():
             data_char = chr(data[0])
             if data_char == 'A':        #A for Auto Mode, toggleFlag = 1
                 robotMain.thread_switch_event.set()
-            elif data_char == 'R':      #R for RC Mode, toggleFlag = 0
+            if data_char == 'R':      #R for RC Mode, toggleFlag = 0
             #    print("Back to RC Mode!")
                 robotMain.thread_switch_event.clear()
                 robotMain.go_event.clear()
-            elif data_char == 'g' and robotMain.thread_switch_event.is_set():        #Go in auto mode
+            if data_char == 'g' and robotMain.thread_switch_event.is_set():        #Go in auto mode
                # print("Go//////////////////////////////////////////")
                 robotMain.go_event.set()        #Go in auto mode
-            elif data_char == 's' and robotMain.thread_switch_event.is_set():        #Go in auto mode
+            if data_char == 'S' and robotMain.thread_switch_event.is_set():        #Go in auto mode
                 robotMain.go_event.clear()        #Go in auto mode
-            elif data_char == 'x':      #Stop
+            if data_char == 'x':      #Stop
               #  print("Stop")
                 robotMain.go_event.clear()        #Stop in auto mode
                 deviceUC1.write('q')                #q for quit

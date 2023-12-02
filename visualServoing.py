@@ -30,6 +30,8 @@ def task3():
             print("Welcome to Auto Camera Mode.")
             robotMain.go_event.wait()
             print("Go*****************************************!!")
+
+            ##############Left to Right##############################
             if streamThread.x > 497:
                 while streamThread.x > 497:
                     rcThread.deviceUC1.write('}')   #Right
@@ -39,7 +41,15 @@ def task3():
                     rcThread.deviceUC1.write('{')   #Left
                     time.sleep(1)
             rcThread.deviceUC1.write('q')   #Stop (Break)
+            print("Left-To-Right Goal Achieved!")
+
+            #############Move out##################################
+            while streamThread.y < 480:
+                rcThread.deviceUC2.write('W')   #'W' for out
+               # time.sleep(1)
+            rcThread.deviceUC2.write('q')   #Stop (Break)
             print("Goal Achieved!")
+
             robotMain.go_event.clear()        #Stop auto mode. This thread will wait until go button is pressed again.
             for m in range(0, 10): 
               rcThread.client_sock.send('K')           #Send 'K' for clear to clear the go flag. We don't want the Android to keep sending 'go'
