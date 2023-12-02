@@ -28,40 +28,43 @@ import queue
 # + = up, - = down
 
 def task3():
-    x= 0
+   # x= 0
     print("Thread 3 started. Waiting for the signal....")
     while True:
         try:
-            x = robotMain.queue.get()
-            robotMain.queue.task_done()
+          #  x = robotMain.queue.get()
+           # robotMain.queue.task_done()
             robotMain.thread_switch_event.wait()
           #  print("Welcome to Auto Camera Mode.")
             robotMain.go_event.wait()
            # print("Go*****************************************!!")
             #while abs(282 - x) > 5:
-            print("x", x)
+            print("x", streamThread.x)
             print("xC", 282)
           #  while abs(282 - x) > 25:
             #   if x > 0 and x < 640 and 282 > 0 and 282 < 640:
-            if x > 282:
-                while x > 282:
-                    x = robotMain.queue.get()
-                    robotMain.queue.task_done()
-                    #print("x = ", x)
-                    #time.sleep(1)
+            if streamThread.x > 282:
+                while streamThread.x > 282:
+                   # streamThread.x = robotMain.queue.get()
+                #    print("x = ", x)
+                 #   time.sleep(1)
                     rcThread.deviceUC1.write('}')   #Right
+                    time.sleep(0.5)
                   #  print("Moving Right!")
-            elif x < 282:
-                while x < 282:
-                    x = robotMain.queue.get()
-                    robotMain.queue.task_done()
-                    # print("x = ", x)
-                    # time.sleep(1)
+            elif streamThread.x < 282:
+                while streamThread.x < 282:
+                   # streamThread.x = robotMain.queue.get()
+                    #robotMain.queue.task_done()
+                  #  print("x = ", x)
+                #    time.sleep(1)
                     rcThread.deviceUC1.write('{')   #Left
+                    time.sleep(0.5)
                    # print("Moving Left!")
             rcThread.deviceUC1.write('q')   #Stop (Break)
             print("Goal Achieved!")
-            robotMain.go_event.clear()
+            while True:
+                pass
+            #robotMain.go_event.clear()
           
         except KeyboardInterrupt:
             print("\nDisconnected")
