@@ -17,13 +17,7 @@ from threading import Event
 import signal
 import queue
 
-
-#x = 0       #Center of cup
-#y = 0
-
-#claw_center_x = 0       #Center of midpoint between tips of claw
-#claw_center_y = 0
-
+# (x, y) are the center of the cup
 # { = left, } = right
 # + = up, - = down
 
@@ -32,39 +26,23 @@ def task3():
     print("Thread 3 started. Waiting for the signal....")
     while True:
         try:
-          #  x = robotMain.queue.get()
-           # robotMain.queue.task_done()
             robotMain.thread_switch_event.wait()
-          #  print("Welcome to Auto Camera Mode.")
+            print("Welcome to Auto Camera Mode.")
             robotMain.go_event.wait()
-           # print("Go*****************************************!!")
-            #while abs(282 - x) > 5:
-            print("x", streamThread.x)
-            print("xC", 282)
-          #  while abs(282 - x) > 25:
-            #   if x > 0 and x < 640 and 282 > 0 and 282 < 640:
+            print("Go*****************************************!!")
             if streamThread.x > 282:
                 while streamThread.x > 282:
-                   # streamThread.x = robotMain.queue.get()
-                #    print("x = ", x)
-                 #   time.sleep(1)
                     rcThread.deviceUC1.write('}')   #Right
-                    time.sleep(0.5)
-                  #  print("Moving Right!")
+                    time.sleep(1)
             elif streamThread.x < 282:
                 while streamThread.x < 282:
-                   # streamThread.x = robotMain.queue.get()
-                    #robotMain.queue.task_done()
-                  #  print("x = ", x)
-                #    time.sleep(1)
                     rcThread.deviceUC1.write('{')   #Left
-                    time.sleep(0.5)
-                   # print("Moving Left!")
+                    time.sleep(1)
             rcThread.deviceUC1.write('q')   #Stop (Break)
             print("Goal Achieved!")
-            while True:
-                pass
-            #robotMain.go_event.clear()
+            robotMain.go_event.clear()        #Stop auto mode. This thread will wait until go button is pressed again.
+            for m in range(0, 10): 
+              rcThread.client_sock.send('K')           #Send 'K' for clear to clear the go flag. We don't want the Android to keep sending 'go'
           
         except KeyboardInterrupt:
             print("\nDisconnected")
