@@ -13,6 +13,7 @@ import threading
 import streamThread
 import robotMain
 import rcThread
+import feedbackThread
 from threading import Event
 import signal
 import queue
@@ -40,15 +41,27 @@ def task3():
                 while streamThread.x < 497:
                     rcThread.deviceUC1.write('{')   #Left
                     time.sleep(1)
-            rcThread.deviceUC1.write('q')   #Stop (Break)
+            for j in range (0, 10):
+              rcThread.deviceUC1.write('q')   #Stop (Break)
             print("Left-To-Right Goal Achieved!")
 
             #############Move out##################################
-            while streamThread.y < 480:
+            while streamThread.y < 500:
                 rcThread.deviceUC2.write('W')   #'W' for out
                # time.sleep(1)
-            rcThread.deviceUC2.write('q')   #Stop (Break)
+            for j in range (0, 10):
+              rcThread.deviceUC2.write('q')   #Stop (Break)
             print("Goal Achieved!")
+
+            #############Squeeze claw until feedback is > 6750
+            while feedbackThread.feedBack > 650:
+                rcThread.deviceUC1.write('c')   #Claw closed
+            for j in range (0, 10):
+                rcThread.deviceUC1.write('%')   #Stop claw
+            print("Claw Squeezed!")
+
+            ##########Lift the boom up#####################
+            
 
             robotMain.go_event.clear()        #Stop auto mode. This thread will wait until go button is pressed again.
             for m in range(0, 10): 
