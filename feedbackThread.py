@@ -33,6 +33,8 @@ def task2():
                     myString = adcVals.split(b'c')
                         #  print(myString)
                     feedBack = int(myString[1])
+               #     print(feedBack)
+                 #   time.sleep(1)
                 breakFlag = 0
                 #print(adcVals)
              #   print(feedBack)

@@ -61,7 +61,7 @@ def task4():
      #       circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1.2, 100)
         
           
-            circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1, 20, param1 = 50, param2 = 30, minRadius = 220, maxRadius = 240) 
+            circles = cv2.HoughCircles(src_gray, cv2.HOUGH_GRADIENT, 1, 20, param1 = 50, param2 = 30, minRadius = 275, maxRadius = 280) 
           #param1 was 50
             # ensure at least some circles were found
             if circles is not None:
