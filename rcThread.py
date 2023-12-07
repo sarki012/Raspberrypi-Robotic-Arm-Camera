@@ -86,6 +86,8 @@ def task1():
                 robotMain.go_event.clear()        #Stop in auto mode
                 deviceUC1.write('q')                #q for quit
                 deviceUC2.write('q')                #q for quit
+            if data_char == 'H':        #Up
+                deviceUC2.write('H')
             elif data_char == 'u':        #Up
                 deviceUC2.write('u')
             elif data_char == 'd':      #Down
