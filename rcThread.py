@@ -27,10 +27,10 @@ def task1():
     global client_sock
     global server_sock
 
-    cmd = 'sudo hciconfig hci0 piscan'
-    os.system(cmd)
-    j = 0
-    wait = 0.001
+    #cmd = 'sudo hciconfig hci0 piscan'
+    #os.system(cmd)
+    # = 0
+    #wait = 0.001
     #F4:42:8F:10:5F:5F
 
     global connection
