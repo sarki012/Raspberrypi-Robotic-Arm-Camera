@@ -2,9 +2,8 @@ from pylibftdi import Device
 import os
 import glob
 import time
-from bluetooth import *
-import socket
 import bluetooth
+import socket
 import cv2
 import numpy as np
 import tty, sys, termios
@@ -27,10 +26,10 @@ def task1():
     global client_sock
     global server_sock
 
-    #cmd = 'sudo hciconfig hci0 piscan'
-    #os.system(cmd)
+    cmd = 'sudo hciconfig hci0 piscan'
+    os.system(cmd)
     # = 0
-    #wait = 0.001
+    wait = 0.001
     #F4:42:8F:10:5F:5F
 
     global connection
@@ -41,9 +40,9 @@ def task1():
     server_sock.listen(1)
 
     port = server_sock.getsockname()[1]
-    uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
-    #uuid = "00001101-0000-1000-8000-00805F9B34FB"
-    advertise_service( server_sock, "raspberrypi",
+    #uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+    uuid = "00001101-0000-1000-8000-00805F9B34FB"
+    advertise_service( server_sock, "ESARK2",
                     service_id = uuid,
                     service_classes = [ uuid, SERIAL_PORT_CLASS ],
                     profiles = [ SERIAL_PORT_PROFILE ]  
@@ -68,7 +67,9 @@ def task1():
         try:  
             data = client_sock.recv(5)      #was 50
             if len(data) == 0:
-                break
+                connection = False
+                client_sock.close()
+                continue
             data_char = chr(data[0])
             if data_char == 'A':        #A for Auto Mode, toggleFlag = 1
                 robotMain.thread_switch_event.set()
@@ -118,6 +119,11 @@ def task1():
                 deviceUC1.write('c')
             elif data_char == '%':      #Stop claw motor
                 deviceUC1.write('%')
+
+        except IOError:
+            connection = False
+            client_sock.close()
+            continue
 
         except KeyboardInterrupt:
             print("\nDisconnected")
