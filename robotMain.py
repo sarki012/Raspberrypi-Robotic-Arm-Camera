@@ -1,13 +1,7 @@
 from pylibftdi import Device
 import os
-import glob
+import glob 
 import time
-from bluetooth import *
-import socket
-import bluetooth
-import cv2
-import numpy as np
-import tty, sys, termios
 import threading
 import rcThread
 import streamThread
